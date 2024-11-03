@@ -62,6 +62,8 @@ class Calculator(Gtk.Application):
                 self.acc = self.acc + self.disp
             elif self.stored_op == "%":
                 self.acc = self.acc % self.disp
+            elif self.stored_op == "=":
+                self.acc = self.disp
             self.disp = 0
             self.display_acc()
             self.stored_op = op
