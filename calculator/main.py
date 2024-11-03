@@ -60,6 +60,8 @@ class Calculator(Gtk.Application):
                 self.acc = self.acc / self.disp
             elif self.stored_op == "-":
                 self.acc = self.acc + self.disp
+            elif self.stored_op == "%":
+                self.acc = self.acc % self.disp
             self.disp = 0
             self.display_acc()
             self.stored_op = op
@@ -85,7 +87,9 @@ class Calculator(Gtk.Application):
             "0", "1", "2", "3",
             "4", "5", "6", "7",
             "8", "9", "+", "-",
-            "*", "/" ]):
+            "*", "/", "%", "=" ]):
+            # button = Gtk.Button()
+            # button.props.child = Gtk.Label.new(str = button_name)
             button = self.makeButton(button_name)
             buttonGrid.attach(button, index % 4, index / 4 + 1, 1, 1)
         # Attach display/button grid to window
