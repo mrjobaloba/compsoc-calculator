@@ -1,0 +1,15 @@
+[project]
+name = "compsoc-calculator"
+version = "0.1.0"
+description = "A calculator program to demonstrate open source development"
+
+dependencies = [
+  "PyGObject"
+]
+
+[project.scripts]
+ccalculator = "calculator.main:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
