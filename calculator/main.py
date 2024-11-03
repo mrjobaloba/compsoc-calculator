@@ -85,13 +85,14 @@ class Calculator(Gtk.Application):
         self.display = Gtk.Label.new(str = "0")
         # Attach the display to the top of the grid
         buttonGrid.attach(self.display, 0, 0, 4, 1)
+        COLUMNS = 4
         for index, button_name in enumerate([
             "0", "1", "2", "3",
             "4", "5", "6", "7",
             "8", "9", "+", "-",
             "*", "/", "%", "=" ]):
             button = self.makeButton(button_name)
-            buttonGrid.attach(button, index % 4, index / 4 + 1, 1, 1)
+            buttonGrid.attach(button, index % COLUMNS, index / COLUMNS + 1, 1, 1)
         # Attach display/button grid to window
         window.props.child = buttonGrid
         window.props.resizable = False
