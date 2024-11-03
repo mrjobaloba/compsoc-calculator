@@ -12,17 +12,19 @@ class IntButton(Gtk.Button):
         super().__init__()
         self.props.label = str(name)
 
+    # Called when the button is pressed
     def do_clicked(self):
         self.calculator.handle_digit(self.number)
         print(f"Number button {self.number} pressed")
 
 class SpecialButton(Gtk.Button):
     def __init__(self, calculator, name):
+        super().__init__()
         self.name = name
         self.calculator = calculator
-        super().__init__()
         self.props.label = name
 
+    # Called when the button is pressed
     def do_clicked(self):
         self.calculator.handle_operation(self.name)
         print(f"special button {self.name} pressed")
@@ -30,8 +32,8 @@ class SpecialButton(Gtk.Button):
 class Calculator(Gtk.Application):
     def __init__(self):
         super().__init__(application_id = "io.compsoc.calculator")
-        self.disp = 0
         GLib.set_application_name("Compsoc calculator")
+        self.disp = 0
         self.stored_op = None
         print("Compsoc calculator")
 
@@ -41,7 +43,9 @@ class Calculator(Gtk.Application):
     def display_acc(self):
         self.display.props.label = str(self.acc)
 
+    # Handle number button press
     def handle_digit(self, digit):
+        # Shift disp register left by 1 and add digit
         self.disp = self.disp * 10 + digit
         print(self.disp)
         self.redo_display()
@@ -73,21 +77,21 @@ class Calculator(Gtk.Application):
 
     def do_activate(self):
         window = Gtk.ApplicationWindow(application = self, title = "Compsoc Calculator")
-        buttons = {}
         buttonGrid = Gtk.Grid()
         self.display = Gtk.Label.new(str = "0")
+        # Attach the display to the top of the grid
         buttonGrid.attach(self.display, 0, 0, 4, 1)
         for index, button_name in enumerate([
             "0", "1", "2", "3",
             "4", "5", "6", "7",
             "8", "9", "+", "-",
             "*", "/" ]):
-            # button = Gtk.Button()
-            # button.props.child = Gtk.Label.new(str = button_name)
             button = self.makeButton(button_name)
             buttonGrid.attach(button, index % 4, index / 4 + 1, 1, 1)
+        # Attach display/button grid to window
         window.props.child = buttonGrid
-        window.set_resizable = False
+        window.props.resizable = False
+        # Make all the widgets in the window visible
         window.present()
 
 def main():
