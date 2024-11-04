@@ -111,6 +111,10 @@ class Calculator:
 def main():
     # Create calculator
     root = Tk()
+    root.title("Compsoc Calculator")
     app = Calculator(root)
     # Run main loop
     root.mainloop()
+
+if __name__ == "__main__":
+    main()
