@@ -1,47 +1,67 @@
-import gi
-import sys
+# import gi
+# import sys
 
-gi.require_version("Gtk", "4.0")
+# gi.require_version("Gtk", "4.0")
 
-from gi.repository import GLib, Gtk
+# from gi.repository import GLib, Gtk
 
-class IntButton(Gtk.Button):
+from tkinter import *
+from tkinter import ttk
+
+class IntButton:
     def __init__(self, calculator, name):
-        self.number = name
         self.calculator = calculator
-        super().__init__()
-        self.props.label = str(name)
+        self.number = name
+        self.button = ttk.Button(calculator.window, text=name, command=self.do_clicked)
 
     # Called when the button is pressed
     def do_clicked(self):
         self.calculator.handle_digit(self.number)
         print(f"Number button {self.number} pressed")
 
-class SpecialButton(Gtk.Button):
+class SpecialButton:
     def __init__(self, calculator, name):
-        super().__init__()
-        self.name = name
         self.calculator = calculator
-        self.props.label = name
+        self.name = name
+        self.button = ttk.Button(calculator.window, text=name, command=self.do_clicked)
 
     # Called when the button is pressed
     def do_clicked(self):
         self.calculator.handle_operation(self.name)
         print(f"special button {self.name} pressed")
 
-class Calculator(Gtk.Application):
-    def __init__(self):
-        super().__init__(application_id = "io.compsoc.calculator")
-        GLib.set_application_name("Compsoc calculator")
+class Calculator:
+    def __init__(self, root):
+        # Initialise registers
         self.disp = 0
         self.stored_op = None
+
+        # Create a new window
+        self.window = ttk.Frame(root, padding = 10)
+        # Use the grid geometry manager
+        self.window.grid()
+        # Attach the display to the top of the grid
+        self.display = ttk.Label(self.window, text="0")
+        self.display.grid(column = 0, row = 0, columnspan=4)
+        COLUMNS = 4
+        # Create buttons
+        for index, button_name in enumerate([
+            "0", "1", "2", "3",
+            "4", "5", "6", "7",
+            "8", "9", "+", "-",
+            "*", "/", "%", "=" ]):
+            button = self.makeButton(button_name)
+            button.button.grid(column = index % COLUMNS, row = index // COLUMNS + 1)
         print("Compsoc calculator")
 
+    # Show the display register
     def redo_display(self):
-        self.display.props.label = str(self.disp)
+        # Update display
+        self.display["text"] = str(self.disp)
 
+    # Show the accumulator
     def display_acc(self):
-        self.display.props.label = str(self.acc)
+        self.display["text"] = str(self.acc)
 
     # Handle number button press
     def handle_digit(self, digit):
@@ -51,7 +71,9 @@ class Calculator(Gtk.Application):
         self.redo_display()
 
     def handle_operation(self, op):
+        # If user has pressed a button previously
         if self.stored_op:
+            # Perform operation
             if self.stored_op == "+":
                 self.acc = self.acc + self.disp
             elif self.stored_op == "*":
@@ -64,13 +86,20 @@ class Calculator(Gtk.Application):
                 self.acc = self.acc % self.disp
             elif self.stored_op == "=":
                 self.acc = self.disp
+            # Clear the display register
             self.disp = 0
+            # Show the accumulator
             self.display_acc()
+            # Remember the current operation
             self.stored_op = op
         else:
+            # Move the display register to the accumulator
             self.acc = self.disp
+            # Remember the current operation
             self.stored_op = op
+            # Clear the display register
             self.disp = 0
+            # Show the display register
             self.redo_display()
 
     def makeButton(self, name):
@@ -79,27 +108,9 @@ class Calculator(Gtk.Application):
         except ValueError:
             return SpecialButton(self, name)
 
-    def do_activate(self):
-        window = Gtk.ApplicationWindow(application = self, title = "Compsoc Calculator")
-        buttonGrid = Gtk.Grid()
-        self.display = Gtk.Label.new(str = "0")
-        # Attach the display to the top of the grid
-        buttonGrid.attach(self.display, 0, 0, 4, 1)
-        COLUMNS = 4
-        for index, button_name in enumerate([
-            "0", "1", "2", "3",
-            "4", "5", "6", "7",
-            "8", "9", "+", "-",
-            "*", "/", "%", "=" ]):
-            button = self.makeButton(button_name)
-            buttonGrid.attach(button, index % COLUMNS, index / COLUMNS + 1, 1, 1)
-        # Attach display/button grid to window
-        window.props.child = buttonGrid
-        window.props.resizable = False
-        # Make all the widgets in the window visible
-        window.present()
-
 def main():
-    app = Calculator()
-    exit_status = app.run(sys.argv)
-    sys.exit(exit_status)
+    # Create calculator
+    root = Tk()
+    app = Calculator(root)
+    # Run main loop
+    root.mainloop()
