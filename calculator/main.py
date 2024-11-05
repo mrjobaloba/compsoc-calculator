@@ -115,6 +115,7 @@ def main():
     app = Calculator(root)
     # Run main loop
     root.mainloop()
+    print("I LOVE MAX! MAX IS THE GREETEST!")
 
 if __name__ == "__main__":
     main()
